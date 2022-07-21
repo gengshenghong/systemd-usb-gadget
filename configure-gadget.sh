@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-SYSDIR=/sys/kernel/config/usb_gadget/
+SYSDIR=/sys/kernel/config/usb_gadget
 DEVDIR=$SYSDIR/rockchip
 
 # These are the default values that will be used if you have not provided
@@ -16,6 +16,14 @@ USB_MAXPOWER=500
 USB_CONFIG="b.1"
 USB_FUNCTIONS="ffs.adb rndis.usb0 hid.usb0"
 
+############################# zic
+# for ecm
+mac_ecm_h=1e:ff:c9:42:c9:e2
+mac_ecm_d=1e:ff:c9:42:c9:e3
+
+mac_rndis_h=1e:ff:c9:42:c9:e0
+mac_rndis_d=1e:ff:c9:42:c9:e1
+############################# zic
 
 echo "Creating USB gadget"
 
