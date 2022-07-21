@@ -21,5 +21,4 @@ install-scripts: $(SCRIPTS)
 
 install-units: $(UNIT)
 	mkdir -p $(DESTDIR)$(unitdir)
-	install -m 600 $(UNIT) $(DESTDIR)$(unitdir); \
-	done
+	install -m 600 $(UNIT) $(DESTDIR)$(unitdir);
