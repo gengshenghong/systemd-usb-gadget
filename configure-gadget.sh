@@ -61,7 +61,7 @@ for func in $USB_FUNCTIONS; do
 			echo MSFT100 > "${DEVDIR}/os_desc/qw_sign"
 			echo RNDIS > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/compatible_id"
 			echo 5162001 > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/sub_compatible_id"
-			ln -sf $DEVDIR/configs/$USB_CONFIG $DEVDIR/functions/$func/os_desc
+			ln -sf $DEVDIR/configs/$USB_CONFIG $DEVDIR/os_desc
 		;;
 		"mass_storage.0")
 			echo /home/firefly/public/mass_storage > $DEVDIR/functions/$func/lun.0/file
