@@ -2,8 +2,7 @@ sbindir=/sbin
 sysconfdir=/etc
 unitdir=$(sysconfdir)/systemd/system
 
-UNITS = \
-	usb-gadget@.service
+UNIT = usb-gadget.service
 
 SCRIPTS = \
 	configure-gadget.sh \
@@ -20,8 +19,7 @@ install-scripts: $(SCRIPTS)
 		install -m 755 $$s $(DESTDIR)$(sbindir)/$${s%.sh}; \
 	done
 
-install-units: $(UNITS)
+install-units: $(UNIT)
 	mkdir -p $(DESTDIR)$(unitdir)
-	for u in $(UNITS); do \
-		install -m 600 $$u $(DESTDIR)$(unitdir); \
+	install -m 600 $(UNIT) $(DESTDIR)$(unitdir); \
 	done
