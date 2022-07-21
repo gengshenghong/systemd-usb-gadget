@@ -1,0 +1,19 @@
+#!/bin/bash
+###########################################################################
+# postrm script main
+###########################################################################
+case "$1" in
+	remove)
+		systemctl stop usb-gadget.service
+		systemctl disable usb-gadget.service
+	;;
+	purge)
+		rm /sbin/configure-gadget.sh
+		rm /sbin/remove-gadget.sh
+		systemctl stop usb-gadget.service
+		systemctl disable usb-gadget
+		rm /etc/systemd/system/usb-gadget.service
+	;;
+	*)
+	;;
+esac
