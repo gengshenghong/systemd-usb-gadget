@@ -56,9 +56,9 @@ for func in $USB_FUNCTIONS; do
 			# Informs Windows that this device is compatible with the built-in RNDIS
 			# driver. This allows automatic driver installation without any need for
 			# a .inf file or manual driver selection.
-			echo 1 > "${DEVDIR}/functions/${func}/os_desc/use"
-			echo 0xcd > "${DEVDIR}/functions/${func}/os_desc/b_vendor_code"
-			echo MSFT100 > "${DEVDIR}/functions/${func}/os_desc/qw_sign"
+			echo 1 > "${DEVDIR}/os_desc/use"
+			echo 0xcd > "${DEVDIR}/os_desc/b_vendor_code"
+			echo MSFT100 > "${DEVDIR}/os_desc/qw_sign"
 			echo RNDIS > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/compatible_id"
 			echo 5162001 > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/sub_compatible_id"
 			ln -sf $DEVDIR/configs/$USB_CONFIG $DEVDIR/functions/$func/os_desc
