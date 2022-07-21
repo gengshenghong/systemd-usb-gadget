@@ -1,7 +1,7 @@
 #!/bin/sh
 
 SYSDIR=/sys/kernel/config/usb_gadget/
-DEVDIR=$SYSDIR/$1
+DEVDIR=$SYSDIR/rockchip
 
 [ -d $DEVDIR ] || exit
 
