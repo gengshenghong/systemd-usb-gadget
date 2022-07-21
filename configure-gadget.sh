@@ -117,6 +117,7 @@ for func in $USB_FUNCTIONS; do
 		*)
 			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG
 		;;
+		esac
 done
 
 
