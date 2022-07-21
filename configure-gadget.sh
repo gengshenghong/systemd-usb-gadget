@@ -14,7 +14,7 @@ USB_PRODUCT="STP90SHC"
 USB_MANUFACTURER="vtouch"
 USB_MAXPOWER=500
 USB_CONFIG="b.1"
-USB_FUNCTIONS="ffs.adb rndis.usb0 hid.usb0"
+USB_FUNCTIONS="ffs.adb rndis.usb0 hid.usb0 mass_storage.0"
 
 ############################# zic
 # for ecm
@@ -56,12 +56,12 @@ for func in $USB_FUNCTIONS; do
 			# Informs Windows that this device is compatible with the built-in RNDIS
 			# driver. This allows automatic driver installation without any need for
 			# a .inf file or manual driver selection.
-			echo 1 > $DEVDIR/os_desc/use
-			echo 0xcd > $DEVDIR/os_desc/b_vendor_code
-			echo MSFT100 > $DEVDIR/os_desc/qw_sign
+			echo 1 > "${DEVDIR}/functions/${func}/os_desc/use"
+			echo 0xcd > "${DEVDIR}/functions/${func}/os_desc/b_vendor_code"
+			echo MSFT100 > "${DEVDIR}/functions/${func}/os_desc/qw_sign"
 			echo RNDIS > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/compatible_id"
 			echo 5162001 > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/sub_compatible_id"
-			ln -sf $DEVDIR/configs/$USB_CONFIG $DEVDIR/os_desc
+			ln -sf $DEVDIR/configs/$USB_CONFIG $DEVDIR/functions/$func/os_desc
 		;;
 		"mass_storage.0")
 			echo /home/firefly/public/mass_storage > $DEVDIR/functions/$func/lun.0/file
@@ -124,6 +124,7 @@ done
 udevadm settle -t 5 || :
 ls /sys/class/udc/ > $DEVDIR/UDC
 
+sleep 5
 if [[ $USB_FUNCTIONS == *"hid.usb0"* ]]; then
 	chmod 666 /dev/hidg0
 fi
