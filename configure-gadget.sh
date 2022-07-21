@@ -65,12 +65,12 @@ for func in $USB_FUNCTIONS; do
 		;;
 		"mass_storage.0")
 			echo /home/firefly/public/mass_storage > $DEVDIR/functions/$func/lun.0/file
-			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG
+			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
 		;;
 		"ecm.usb0")
 			echo "${mac_ecm_h}" > "${DEVDIR}/functions/${func}/host_addr"
 			echo "${mac_ecm_d}" > "${DEVDIP}/functions/${func}/dev_addr"
-			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG
+			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
 		;;
 		"hid.usb0")
 
@@ -105,17 +105,17 @@ for func in $USB_FUNCTIONS; do
 					;;
 
 			esac
-			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG
+			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
 		;;
 		ffs.adb)
-			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG
+			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
 			mkdir -p /dev/usb-ffs/adb
 			mount -o uid=2000,gid=2000 -t functionfs adb /dev/usb-ffs/adb
 			export service_adb_tcp_port=5555
 			start-stop-daemon --start --oknodo --pidfile /var/run/adbd.pid --startas /usr/local/bin/adbd --background
 		;;
 		*)
-			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG
+			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
 		;;
 		esac
 done
