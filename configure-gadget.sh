@@ -59,8 +59,8 @@ for func in $USB_FUNCTIONS; do
 			echo 1 > $DEVDIR/os_desc/use
 			echo 0xcd > $DEVDIR/os_desc/b_vendor_code
 			echo MSFT100 > $DEVDIR/os_desc/qw_sign
-			echo RNDIS > "${func}/os_desc/interface.rndis/compatible_id"
-			echo 5162001 > "${func}/os_desc/interface.rndis/sub_compatible_id"
+			echo RNDIS > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/compatible_id"
+			echo 5162001 > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/sub_compatible_id"
 			ln -sf $DEVDIR/configs/$USB_CONFIG $DEVDIR/os_desc
 		;;
 		"mass_storage.0")
