@@ -14,15 +14,15 @@ USB_PRODUCT="STP90SHC"
 USB_MANUFACTURER="vtouch"
 USB_MAXPOWER=500
 USB_CONFIG="b.1"
-USB_FUNCTIONS="ffs.adb rndis.usb0 hid.usb0 mass_storage.0"
+USB_FUNCTIONS="rndis.usb0 ffs.adb hid.usb0 mass_storage.0"
 
 ############################# zic
 # for ecm
-mac_ecm_h=1e:ff:c9:42:c9:e2
-mac_ecm_d=1e:ff:c9:42:c9:e3
+mac_ecm_h="1e:ff:c9:42:c9:e2"
+mac_ecm_d="1e:ff:c9:42:c9:e3"
 
-mac_rndis_h=1e:ff:c9:42:c9:e0
-mac_rndis_d=1e:ff:c9:42:c9:e1
+mac_rndis_h="1e:ff:c9:42:c9:e0"
+mac_rndis_d="1e:ff:c9:42:c9:e1"
 ############################# zic
 
 echo "Creating USB gadget"
@@ -124,7 +124,13 @@ done
 udevadm settle -t 5 || :
 ls /sys/class/udc/ > $DEVDIR/UDC
 
-sleep 5
+# ipv4
+ifconfig usb0 192.168.55.1 broadcast 192.168.55.100 netmask 255.255.255.0 up
+
+# ipv6 : link local
+ifconfig usb0 add fe80::1
+
+sleep 10
 if [[ $USB_FUNCTIONS == *"hid.usb0"* ]]; then
 	chmod 666 /dev/hidg0
 fi
