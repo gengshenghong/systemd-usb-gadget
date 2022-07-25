@@ -48,69 +48,86 @@ for func in $USB_FUNCTIONS; do
 
 	case $func in
 		"rndis.usb0")
-			echo "${mac_rndis_h}" > "${DEVDIR}/functions/${func}/host_addr"
-			echo "${mac_rndis_d}" > "${DEVDIR}/functions/${func}/dev_addr"
-			# echo 1 > "${DEVDIR}/functions/${func}/protocol"
-			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG
+			if [ ! -e "mkdir -p /sys/kernel/config/usb_gadget/rockchip/functions/rndis.usb0" ] ;
+			then
+				echo "${mac_rndis_h}" > "${DEVDIR}/functions/${func}/host_addr"
+				echo "${mac_rndis_d}" > "${DEVDIR}/functions/${func}/dev_addr"
+				# echo 1 > "${DEVDIR}/functions/${func}/protocol"
+				ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG
 
-			# Informs Windows that this device is compatible with the built-in RNDIS
-			# driver. This allows automatic driver installation without any need for
-			# a .inf file or manual driver selection.
-			echo 1 > "${DEVDIR}/os_desc/use"
-			echo 0xcd > "${DEVDIR}/os_desc/b_vendor_code"
-			echo MSFT100 > "${DEVDIR}/os_desc/qw_sign"
-			echo RNDIS > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/compatible_id"
-			echo 5162001 > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/sub_compatible_id"
-			ln -sf $DEVDIR/configs/$USB_CONFIG $DEVDIR/os_desc
+				# Informs Windows that this device is compatible with the built-in RNDIS
+				# driver. This allows automatic driver installation without any need for
+				# a .inf file or manual driver selection.
+				echo 1 > "${DEVDIR}/os_desc/use"
+				echo 0xcd > "${DEVDIR}/os_desc/b_vendor_code"
+				echo MSFT100 > "${DEVDIR}/os_desc/qw_sign"
+				echo RNDIS > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/compatible_id"
+				echo 5162001 > "${DEVDIR}/functions/${func}/os_desc/interface.rndis/sub_compatible_id"
+				ln -sf $DEVDIR/configs/$USB_CONFIG $DEVDIR/os_desc
+			fi
 		;;
 		"mass_storage.0")
-			echo /home/firefly/public/mass_storage > $DEVDIR/functions/$func/lun.0/file
-			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
+			if [ ! -e "/sys/kernel/config/usb_gadget/rockchip/functions/mass_storage.0" ] ;
+			then
+				echo /home/firefly/public/mass_storage > $DEVDIR/functions/$func/lun.0/file
+				ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
+			fi
 		;;
 		"ecm.usb0")
-			echo "${mac_ecm_h}" > "${DEVDIR}/functions/${func}/host_addr"
-			echo "${mac_ecm_d}" > "${DEVDIP}/functions/${func}/dev_addr"
-			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
+			if [ ! -e "mkdir -p /sys/kernel/config/usb_gadget/rockchip/functions/ecm.usb0" ] ;
+			then
+				echo "${mac_ecm_h}" > "${DEVDIR}/functions/${func}/host_addr"
+				echo "${mac_ecm_d}" > "${DEVDIP}/functions/${func}/dev_addr"
+				ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
+			fi
 		;;
 		"hid.usb0")
+			if [ ! -e "mkdir -p /sys/kernel/config/usb_gadget/rockchip/functions/hid.usb0" ] ;
+			then
+				echo 1 > "${DEVDIR}/functions/${func}/protocol"
+				echo 1 > "${DEVDIR}/functions/${func}/subclass"
+				echo 8 > "${DEVDIR}/functions/${func}/report_length"
 
-			echo 1 > "${DEVDIR}/functions/${func}/protocol"
-			echo 1 > "${DEVDIR}/functions/${func}/subclass"
-			echo 8 > "${DEVDIR}/functions/${func}/report_length"
+				hidMode=$(awk -F ', ' '$2 ~ /hidMode/ {gsub(/"/, "", $3);  print $3}' /home/firefly/public/vpscpp/param.json)
+				case $hidMode in
+					0)
+						;;
+					1)
+						# vps hidMode=1
+						# touch #0
+						# win7, win10, linux
+						echo -ne \\x05\\x01\\x09\\x01\\xa1\\x01\\x05\\x01\\x09\\x01\\xa1\\x00\\x05\\x09\\x19\\x01\\x29\\x01\\x15\\x00\\x25\\x01\\x35\\x00\\x45\\x01\\x66\\x00\\x00\\x75\\x01\\x95\\x01\\x81\\x62\\x75\\x01\\x95\\x07\\x81\\x01\\x05\\x01\\x09\\x30\\x09\\x31\\x16\\x00\\x00\\x26\\x10\\x27\\x36\\x00\\x00\\x46\\x10\\x27\\x66\\x00\\x00\\x75\\x10\\x95\\x02\\x81\\x62\\xc0\\xc0 > "${DEVDIR}/functions/${func}/report_desc"
+						;;
+					2)
+						# vps hidMode=2
+						# touch #1
+						# android
+						# no cursor / press / drag / up
+						echo -ne \\x05\\x0d\\x09\\x02\\xa1\\x01\\x09\\x20\\xA1\\x00\\x09\\x42\\x09\\x32\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x02\\x81\\x02\\x75\\x01\\x95\\x06\\x81\\x01\\x05\\x01\\x09\\x01\\xA1\\x00\\x09\\x30\\x09\\x31\\x16\\x00\\x00\\x26\\x10\\x27\\x36\\x00\\x00\\x46\\x10\\x27\\x66\\x00\\x00\\x75\\x10\\x95\\x02\\x81\\x02\\xc0\\xc0\\xc0 > "${DEVDIR}/functions/${func}/report_desc"
+						;;
+					3)
+						# touch #2
+						echo -ne \\x05\\x0D\\x09\\x04\\xA1\\x01\\x09\\x55\\x25\\x01\\xB1\\x02\\x09\\x54\\x95\\x01\\x75\\x08\\x81\\x02\\x09\\x22\\xA1\\x02\\x09\\x51\\x75\\x08\\x95\\x01\\x81\\x02\\x09\\x42\\x09\\x32\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x02\\x81\\x02\\x95\\x06\\x81\\x03\\x05\\x01\\x09\\x30\\x09\\x31\\x16\\x00\\x00\\x26\\x10\\x27\\x36\\x00\\x00\\x46\\x10\\x27\\x66\\x00\\x00\\x75\\x10\\x95\\x02\\x81\\x02\\xC0\\xC0 > "${DEVDIR}/functions/${func}/report_desc"
+						;;
+					5)
+						# mouse rel
+						echo -ne \\x05\\x01\\x09\\x02\\xa1\\x01\\x09\\x01\\xa1\\x00\\x05\\x09\\x19\\x01\\x29\\x03\\x15\\x00\\x25\\x01\\x95\\x03\\x75\\x01\\x81\\x02\\x95\\x01\\x75\\x05\\x81\\x03\\x05\\x01\\x09\\x30\\x09\\x31\\x15\\x81\\x25\\x7f\\x75\\x08\\x95\\x02\\x81\\x06\\xc0\\xc0 > "${DEVDIR}/functions/${func}/report_desc"
+						;;
 
-			hidMode=$(awk -F ', ' '$2 ~ /hidMode/ {gsub(/"/, "", $3);  print $3}' /home/firefly/public/vpscpp/param.json)
-			case $hidMode in
-				0)
-					;;
-				1)
-					# vps hidMode=1
-					# touch #0
-					# win7, win10, linux
-					echo -ne \\x05\\x01\\x09\\x01\\xa1\\x01\\x05\\x01\\x09\\x01\\xa1\\x00\\x05\\x09\\x19\\x01\\x29\\x01\\x15\\x00\\x25\\x01\\x35\\x00\\x45\\x01\\x66\\x00\\x00\\x75\\x01\\x95\\x01\\x81\\x62\\x75\\x01\\x95\\x07\\x81\\x01\\x05\\x01\\x09\\x30\\x09\\x31\\x16\\x00\\x00\\x26\\x10\\x27\\x36\\x00\\x00\\x46\\x10\\x27\\x66\\x00\\x00\\x75\\x10\\x95\\x02\\x81\\x62\\xc0\\xc0 > "${DEVDIR}/functions/${func}/report_desc"
-					;;
-				2)
-					# vps hidMode=2
-					# touch #1
-					# android
-					# no cursor / press / drag / up
-					echo -ne \\x05\\x0d\\x09\\x02\\xa1\\x01\\x09\\x20\\xA1\\x00\\x09\\x42\\x09\\x32\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x02\\x81\\x02\\x75\\x01\\x95\\x06\\x81\\x01\\x05\\x01\\x09\\x01\\xA1\\x00\\x09\\x30\\x09\\x31\\x16\\x00\\x00\\x26\\x10\\x27\\x36\\x00\\x00\\x46\\x10\\x27\\x66\\x00\\x00\\x75\\x10\\x95\\x02\\x81\\x02\\xc0\\xc0\\xc0 > "${DEVDIR}/functions/${func}/report_desc"
-					;;
-				3)
-					# touch #2
-					echo -ne \\x05\\x0D\\x09\\x04\\xA1\\x01\\x09\\x55\\x25\\x01\\xB1\\x02\\x09\\x54\\x95\\x01\\x75\\x08\\x81\\x02\\x09\\x22\\xA1\\x02\\x09\\x51\\x75\\x08\\x95\\x01\\x81\\x02\\x09\\x42\\x09\\x32\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x02\\x81\\x02\\x95\\x06\\x81\\x03\\x05\\x01\\x09\\x30\\x09\\x31\\x16\\x00\\x00\\x26\\x10\\x27\\x36\\x00\\x00\\x46\\x10\\x27\\x66\\x00\\x00\\x75\\x10\\x95\\x02\\x81\\x02\\xC0\\xC0 > "${DEVDIR}/functions/${func}/report_desc"
-					;;
-				5)
-					# mouse rel
-					echo -ne \\x05\\x01\\x09\\x02\\xa1\\x01\\x09\\x01\\xa1\\x00\\x05\\x09\\x19\\x01\\x29\\x03\\x15\\x00\\x25\\x01\\x95\\x03\\x75\\x01\\x81\\x02\\x95\\x01\\x75\\x05\\x81\\x03\\x05\\x01\\x09\\x30\\x09\\x31\\x15\\x81\\x25\\x7f\\x75\\x08\\x95\\x02\\x81\\x06\\xc0\\xc0 > "${DEVDIR}/functions/${func}/report_desc"
-					;;
-
-			esac
-			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
+				esac
+				ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
+			fi
 		;;
 		ffs.adb)
-			ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
-			mkdir -p /dev/usb-ffs/adb
-			mount -o uid=2000,gid=2000 -t functionfs adb /dev/usb-ffs/adb
+			if [ ! -e "/sys/kernel/config/usb_gadget/rockchip/functions/ffs.adb" ] ;
+			then
+				ln -sf $DEVDIR/functions/$func $DEVDIR/configs/$USB_CONFIG/$func
+			fi
+			if [ ! -e "/dev/usb-ffs/adb" ] ;
+			then
+				mkdir -p /dev/usb-ffs/adb
+				mount -o uid=2000,gid=2000 -t functionfs adb /dev/usb-ffs/adb
+			fi
 			export service_adb_tcp_port=5555
 			start-stop-daemon --start --oknodo --pidfile /var/run/adbd.pid --startas /usr/local/bin/adbd --background
 		;;
