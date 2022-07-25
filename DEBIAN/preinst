@@ -6,11 +6,14 @@ sbindir=/sbin
 sysconfdir=/etc
 unitdir=$(sysconfdir)/systemd/system
 
-UNIT = usb-gadget.service
+UNITS = \
+	usb-gadget.service \
+	checkOTG.service
 
 SCRIPTS = \
 	configure-gadget.sh \
-	remove-gadget.sh
+	remove-gadget.sh \
+	check-gadget.sh
 
 case "$1" in
 	install)
@@ -22,9 +25,12 @@ case "$1" in
 			install -m 755 $$s $(sbindir)/$${s%.sh}; \
 		done
 		mkdir -p $(unitdir)
-		install -m 600 $(UNIT) $(unitdir);
+		for u in $(UNITS); do \
+			install -m 600 $$u $(DESTDIR)$(unitdir); \
+		done
 		systemctl daemon-reload
 		systemctl enable usb-gadget.service
+		systemctl enable checkOTG.service
 		echo "USB Gadget awake after reboot"
 		
 	;;

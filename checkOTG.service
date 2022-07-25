@@ -1,0 +1,10 @@
+[Unit]
+Description=USB Gadget rockchip checking status
+After=usb-gadget
+[Service]
+Type=forking
+ExecStart=/sbin/check-gadget
+Restart=always
+TimeoutStartSec=0
+[Install]
+WantedBy=multi-user.target

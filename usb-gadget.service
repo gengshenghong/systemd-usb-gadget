@@ -3,7 +3,6 @@ Description=USB Gadget rockchip
 ConditionPathIsDirectory=/sys/kernel/config/usb_gadget/rockchip/
 
 [Service]
-EnvironmentFile=/etc/gadget/rockchip.conf
 RemainAfterExit=yes
 ExecStart=/sbin/configure-gadget
 ExecStop=/sbin/remove-gadget

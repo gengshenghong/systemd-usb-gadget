@@ -2,11 +2,14 @@ sbindir=/sbin
 sysconfdir=/etc
 unitdir=$(sysconfdir)/systemd/system
 
-UNIT = usb-gadget.service
+UNITS = \
+	checkOTG.service \
+	usb-gadget.service  
 
 SCRIPTS = \
 	configure-gadget.sh \
-	remove-gadget.sh
+	remove-gadget.sh \
+	check-gadget.sh
 
 all:
 
@@ -21,4 +24,6 @@ install-scripts: $(SCRIPTS)
 
 install-units: $(UNIT)
 	mkdir -p $(DESTDIR)$(unitdir)
-	install -m 600 $(UNIT) $(DESTDIR)$(unitdir);
+	for u in $(UNITS); do \
+		install -m 600 $$u $(DESTDIR)$(unitdir); \
+	done
