@@ -1,6 +1,5 @@
 [Unit]
 Description=USB Gadget rockchip
-ConditionPathIsDirectory=/sys/kernel/config/usb_gadget/rockchip/
 
 [Service]
 RemainAfterExit=yes

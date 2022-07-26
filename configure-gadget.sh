@@ -143,11 +143,9 @@ ifconfig usb0 192.168.55.1 broadcast 192.168.55.100 netmask 255.255.255.0 up
 # ipv6 : link local
 ifconfig usb0 add fe80::1
 
-if [ ! -e "/dev/usb-ffs/adb" ] ;
-then
-	mkdir -p /dev/usb-ffs/adb
-	mount -o uid=2000,gid=2000 -t functionfs adb /dev/usb-ffs/adb
-fi
+mkdir -p /dev/usb-ffs/adb
+mount -o uid=2000,gid=2000 -t functionfs adb /dev/usb-ffs/adb
+
 export service_adb_tcp_port=5555
 start-stop-daemon --start --oknodo --pidfile /var/run/adbd.pid --startas /usr/local/bin/adbd --background
 
