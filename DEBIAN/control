@@ -1,9 +1,0 @@
-Package: usbgadget
-Version: 1.0.0
-Maintainer: Yoonsu Kim
-Name : <ing03201@vtouch.io>
-Description: rockchip USB OTG function install 
-Homepage: https://vtouch.io
-Architecture: all
-Section:free
-Priority:optional

@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# TODO: it does not work well for rndis and ncm
+exit 0
+
 SYSDIR=/sys/kernel/config/usb_gadget/
 DEVDIR=$SYSDIR/rockchip
 
