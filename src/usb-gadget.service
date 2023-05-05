@@ -3,8 +3,8 @@ Description=USB Gadget rockchip
 
 [Service]
 RemainAfterExit=yes
-ExecStart=/sbin/configure-gadget
-ExecStop=/sbin/remove-gadget
+ExecStart=/usr/bin/configure-gadget.sh
+ExecStop=/usr/bin/remove-gadget.sh
 
 [Install]
 WantedBy=multi-user.target

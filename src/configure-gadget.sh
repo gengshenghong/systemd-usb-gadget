@@ -39,7 +39,11 @@ fi
 echo "Creating USB gadget"
 
 mkdir -p $DEVDIR -m 0770
- 
+
+echo 0xEF > $DEVDIR/bDeviceClass
+echo 0x02 > $DEVDIR/bDeviceSubClass
+echo 0x01 > $DEVDIR/bDeviceProtocol
+
 echo $USB_IDVENDOR > $DEVDIR/idVendor
 echo $USB_IDPRODUCT > $DEVDIR/idProduct
 echo $USB_BCDDEVICE > $DEVDIR/bcdDevice
